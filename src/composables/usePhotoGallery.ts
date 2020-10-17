@@ -63,6 +63,18 @@ export function usePhotoGallery() {
         value: JSON.stringify(photos.value)
     });
     }
+
+  const deletePhoto = async (photo: Photo) => {
+    // Remove this photo from the Photos reference data array
+    photos.value = photos.value.filter(p => p.filepath !== photo.filepath);
+
+    // delete photo file from filesystem
+    const filename = photo.filepath.substr(photo.filepath.lastIndexOf('/') + 1);
+    await Filesystem.deleteFile({
+      path: filename,
+      directory: FilesystemDirectory.Data
+    });
+  };
     
     
     const loadSaved = async () => {
@@ -106,7 +118,8 @@ export function usePhotoGallery() {
 
   return {
     photos,
-    takePhoto
+    takePhoto,
+    deletePhoto
   };
 }
 
